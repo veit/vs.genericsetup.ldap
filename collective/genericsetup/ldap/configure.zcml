@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.genericsetup.ldap">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <five:registerPackage package="Products.PloneLDAP" initialize="Products.PloneLDAP.initialize" />
+
+    <genericsetup:importStep
+        name="ldap-settings-import"
+        title="LDAP Settings Import"
+        description="Import custom LDAP and AD settings."
+        handler="collective.genericsetup.ldap.exportimport.importLDAPSettings"
+    />
+
+    <genericsetup:exportStep
+        name="ldap-settings-export"
+        title="LDAP Settings Export"
+        description="Export custom LDAP and AD settings."
+        handler="collective.genericsetup.ldap.exportimport.exportLDAPSettings"
+    />
+
+    <five:implements
+        class="Products.PloneLDAP.plugins.ldap.PloneLDAPMultiPlugin"
+        interface=".interfaces.ILDAPPlugin"
+    />
+
+    <adapter
+        factory=".exportimport.LDAPPluginExportImport"
+        provides="Products.GenericSetup.interfaces.IFilesystemExporter"
+        for=".interfaces.ILDAPPlugin"
+    />
+
+    <adapter
+        factory=".exportimport.LDAPPluginExportImport"
+        provides="Products.GenericSetup.interfaces.IFilesystemImporter"
+        for=".interfaces.ILDAPPlugin"
+    />
+
+</configure>
