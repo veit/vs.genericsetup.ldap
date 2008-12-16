@@ -165,7 +165,7 @@ class LDAPPluginExportImport:
         # use PloneLDAP    
         if (plug_type == 'Plone LDAP plugin') or ((plug_type == 'LDAP Multi Plugin') and (update)) :
             adder = manage_addPloneLDAPMultiPlugin
-        elif (plug_type == ' Plone Active Directory plugin') or ((plug_type == 'ActiveDirectory Multi Plugin') and (update)) :
+        elif (plug_type == 'Plone Active Directory plugin') or ((plug_type == 'ActiveDirectory Multi Plugin') and (update)) :
             adder = manage_addPloneActiveDirectoryMultiPlugin
             
         # use LDAPMultiPlugin
