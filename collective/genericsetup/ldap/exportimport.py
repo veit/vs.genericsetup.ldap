@@ -185,7 +185,7 @@ class LDAPPluginExportImport:
                     self = pas,
                     id = plug_id,
                     title = plug_title,
-                    LDAP_server = servers[0]['host'],
+                    LDAP_server = len(servers) and servers[0]['host'] or None,
                     login_attr = settings['_login_attr'],
                     uid_attr = settings['_uid_attr'],
                     users_base = settings['users_base'],
@@ -198,13 +198,17 @@ class LDAPPluginExportImport:
                     binduid_usage = settings['_binduid_usage'],
                     rdn_attr = settings['_rdnattr'],
                     local_groups = settings['_local_groups'],
-                    use_ssl = servers[0]['protocol'] == 'ldaps',
+                    use_ssl = len(servers) and (servers[0]['protocol'] == 'ldaps') or False,
                     encryption = settings['_pwd_encryption'],
                     read_only = settings['read_only'],
                 )
                 obj = getattr(pas, plug_id)
                 obj.manage_activateInterfaces(interfaces)
                 print >> out, "LDAP-plugin added: %s." % plug_id
+                plugin = getattr(pas, plug_id)
+                folder = plugin.acl_users
+                folder._user_objclasses = settings['_user_objclasses']
+                folder.setSchemaConfig(schema)
             except SERVER_DOWN:
                 print >> out, "LDAP-server down (%s)." % plug_id
             
