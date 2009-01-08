@@ -146,7 +146,10 @@ class LDAPPluginExportImport:
                  c_id = attr.getAttribute('id')
                  c_attr = {}
                  for item in attr.getElementsByTagName('item'):
-                     c_attr[item.getAttribute('id')] = item.getAttribute('value')
+                    if item.getAttribute('value') != 'False':
+                        c_attr[item.getAttribute('id')] = item.getAttribute('value')
+                    else:
+                        c_attr[item.getAttribute('id')] = False 
                  schema[c_id] = c_attr
         servers = []
         for server in root.getElementsByTagName('server'):
