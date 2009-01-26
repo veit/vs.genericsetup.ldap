@@ -77,8 +77,15 @@ class LDAPPluginExportImport:
                     act_ids = [x[0] for x in actives]
                     if obj.getId() in act_ids:
                         interfaces.append(p_info['id'])
-                    
-                c_info = {'meta_type': obj.meta_type, 'interfaces': interfaces, 'properties':[], 'schema':[], 'servers':[], 'id': obj.getId(), 'title': obj.title}
+                        
+                plugin_props = obj.propertyMap() 
+                for prop in plugin_props:
+                    value = obj.getProperty(prop['id'])
+                    if prop['type'] in ['string', 'int']:
+                        prop['value'] = obj.getProperty(prop['id'])
+                plugin_props = [ i for i in plugin_props if 'value' in i.keys()]
+
+                c_info = {'meta_type': obj.meta_type, 'plugin_props': plugin_props,'interfaces': interfaces, 'properties':[], 'schema':[], 'servers':[], 'id': obj.getId(), 'title': obj.title}
                 uf = getattr(obj, 'acl_users')
                 for prop in ldap_props:
                     value = uf.getProperty(prop)
@@ -124,6 +131,15 @@ class LDAPPluginExportImport:
         plug_update = (root.getAttribute('update') == 'True')
         settings = {}
         interfaces = []
+        plugin_props = []
+        for prop in root.getElementsByTagName('plugin_property'):
+            p_type = prop.getAttribute('type')
+            p_id = prop.getAttribute('id')
+            value = prop.getAttribute('value')
+            if p_type == 'int':
+                value = int(value)
+            plugin_props.append({'id':p_id, 'type': p_type, 'value': value})
+
         for iface in root.getElementsByTagName('interface'):
             interfaces.append(iface.getAttribute('value'))
             
@@ -209,6 +225,11 @@ class LDAPPluginExportImport:
                 obj.manage_activateInterfaces(interfaces)
                 print >> out, "LDAP-plugin added: %s." % plug_id
                 plugin = getattr(pas, plug_id)
+                for prop in plugin_props:
+                    if plugin.hasProperty(prop['id']):
+                        plugin.manage_changeProperties({prop['id']:prop['value']})   
+                    else:
+                        plugin.manage_addProperty(id=prop['id'], value=prop['value'], type=prop['type'])
                 folder = plugin.acl_users
                 folder._user_objclasses = settings['_user_objclasses']
                 folder.setSchemaConfig(schema)

@@ -9,7 +9,13 @@
             update="False">
             
             <interface tal:repeat="iface plugin/interfaces" value="" tal:attributes="value iface" />
-            
+            <plugin_property id="ID" type="TYPE" mode="MODE" value="VALUE" 
+                tal:repeat="prop plugin/plugin_props"
+                tal:attributes="id prop/id;
+                                type prop/type;
+                                mode prop/mode;
+                                value prop/value;"
+                                /> 
             <property id="ID" type="TYPE" 
                 tal:repeat="property plugin/properties"
                 tal:attributes="id property/id;
