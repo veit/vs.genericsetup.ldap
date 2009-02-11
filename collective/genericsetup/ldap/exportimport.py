@@ -236,7 +236,7 @@ class LDAPPluginExportImport:
             except SERVER_DOWN:
                 print >> out, "LDAP-server down (%s)." % plug_id
             
-        if len(servers) > 1:
+        if len(servers):
             plugin = getattr(pas, plug_id)
             folder = plugin.acl_users
             existing_hosts = [server['host'] for server in folder.getServers()]
