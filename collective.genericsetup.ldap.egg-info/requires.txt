@@ -1,5 +1,0 @@
-setuptools
-Products.GenericSetup
-Products.PloneLDAP
-Products.LDAPMultiPlugins
-Products.LDAPUserFolder
