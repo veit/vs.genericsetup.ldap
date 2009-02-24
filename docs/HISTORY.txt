@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2009/02/24
+    
+    * added support for _extra_user_filter
+
+
 1.0 - Unreleased
 ----------------
 

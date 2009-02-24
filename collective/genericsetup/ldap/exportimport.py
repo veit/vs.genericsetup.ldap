@@ -38,6 +38,7 @@ ldap_props = ['_login_attr',
               '_binduid_usage',
               'read_only',
               '_user_objclasses',
+              '_extra_user_filter',
               '_pwd_encryption',
               '_roles']
 
