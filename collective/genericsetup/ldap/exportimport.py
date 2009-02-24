@@ -200,44 +200,43 @@ class LDAPPluginExportImport:
         if plug_update and (plug_id in pas.objectIds()):
             pas.manage_delObjects(ids=[plug_id])   
         if plug_id not in pas.objectIds():
-            try:
-                adder(
-                    self = pas,
-                    id = plug_id,
-                    title = plug_title,
-                    LDAP_server = None,
-                    login_attr = settings['_login_attr'],
-                    uid_attr = settings['_uid_attr'],
-                    users_base = settings['users_base'],
-                    users_scope = settings['users_scope'],
-                    roles = settings['_roles'],
-                    groups_base = settings['groups_base'],
-                    groups_scope = settings['groups_scope'],
-                    binduid = settings['_binduid'],
-                    bindpwd = settings['_bindpwd'],
-                    binduid_usage = settings['_binduid_usage'],
-                    rdn_attr = settings['_rdnattr'],
-                    local_groups = settings['_local_groups'],
-                    use_ssl = False,
-                    encryption = settings['_pwd_encryption'],
-                    read_only = settings['read_only'],
-                )
-                obj = getattr(pas, plug_id)
-                obj.manage_activateInterfaces(interfaces)
-                print >> out, "LDAP-plugin added: %s." % plug_id
-                plugin = getattr(pas, plug_id)
-                for prop in plugin_props:
-                    if plugin.hasProperty(prop['id']):
-                        plugin.manage_changeProperties({prop['id']:prop['value']})   
-                    else:
-                        plugin.manage_addProperty(id=prop['id'], value=prop['value'], type=prop['type'])
-                folder = plugin.acl_users
-                folder._user_objclasses = settings['_user_objclasses']
-                folder.setSchemaConfig(schema)
-            except SERVER_DOWN:
-                print >> out, "LDAP-server down (%s)." % plug_id
+            adder(
+                self = pas,
+                id = plug_id,
+                title = plug_title,
+                LDAP_server = None,
+                login_attr = settings['_login_attr'],
+                uid_attr = settings['_uid_attr'],
+                users_base = settings['users_base'],
+                users_scope = settings['users_scope'],
+                roles = settings['_roles'],
+                groups_base = settings['groups_base'],
+                groups_scope = settings['groups_scope'],
+                binduid = settings['_binduid'],
+                bindpwd = settings['_bindpwd'],
+                binduid_usage = settings['_binduid_usage'],
+                rdn_attr = settings['_rdnattr'],
+                local_groups = settings['_local_groups'],
+                use_ssl = False,
+                encryption = settings['_pwd_encryption'],
+                read_only = settings['read_only'],
+            )
+            obj = getattr(pas, plug_id)
+            obj.manage_activateInterfaces(interfaces)
+            print >> out, "LDAP-plugin added: %s." % plug_id
+            plugin = getattr(pas, plug_id)
+            for prop in plugin_props:
+                if plugin.hasProperty(prop['id']):
+                    plugin.manage_changeProperties({prop['id']:prop['value']})   
+                else:
+                    plugin.manage_addProperty(id=prop['id'], value=prop['value'], type=prop['type'])
+            folder = plugin.acl_users
+            folder._user_objclasses = settings['_user_objclasses']
+            if '_extra_user_filter' in settings.keys():
+                folder._extra_user_filter = settings['_extra_user_filter']
+            folder.setSchemaConfig(schema)
             
-        if len(servers):
+        if servers:
             plugin = getattr(pas, plug_id)
             folder = plugin.acl_users
             existing_hosts = [server['host'] for server in folder.getServers()]
