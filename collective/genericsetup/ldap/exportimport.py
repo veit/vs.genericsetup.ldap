@@ -63,6 +63,8 @@ class LDAPPluginExportImport:
             val_type = 'list'
         elif type(value) == type(23):
             val_type = 'int'
+        elif type(value) == type(True):
+            val_type = 'bool'
         return val_type 
         
     def _getExportInfo(self, context):
@@ -156,6 +158,8 @@ class LDAPPluginExportImport:
                 value = values[0]
             if type == 'int':
                 value = int(value)
+            if type == 'bool':
+                value = ( value.lower() !='false' and 1 or 0 )
             settings[id] = value 
         schema = {}
         for schemanode in root.getElementsByTagName('schema'):

@@ -4,6 +4,7 @@ Changelog
 2009/02/24
     
     * added support for _extra_user_filter
+    * bool for plugin-properties (read_only and local_groups)
 
 
 1.0 - Unreleased
