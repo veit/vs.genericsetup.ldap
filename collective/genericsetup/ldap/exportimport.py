@@ -141,6 +141,8 @@ class LDAPPluginExportImport:
             value = prop.getAttribute('value')
             if p_type == 'int':
                 value = int(value)
+            if p_type == 'string':
+                value = str(value)
             plugin_props.append({'id':p_id, 'type': p_type, 'value': value})
 
         for iface in root.getElementsByTagName('interface'):
