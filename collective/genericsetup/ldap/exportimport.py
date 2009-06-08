@@ -147,6 +147,13 @@ class LDAPPluginExportImport:
 
         for iface in root.getElementsByTagName('interface'):
             interfaces.append(iface.getAttribute('value'))
+
+        caches = list() 
+        for node in root.getElementsByTagName('cache'):
+            caches.append(node.getAttribute('value'))
+
+        if len(caches) > 1:
+            raise ValueError('You can not define multiple <cache> properties')
             
         for prop in root.getElementsByTagName('property'):
             type = prop.getAttribute('type')
@@ -229,6 +236,8 @@ class LDAPPluginExportImport:
             )
             obj = getattr(pas, plug_id)
             obj.manage_activateInterfaces(interfaces)
+            for cache in caches:
+                obj.ZCacheable_setManagerId(cache)
             print >> out, "LDAP-plugin added: %s." % plug_id
             plugin = getattr(pas, plug_id)
             for prop in plugin_props:

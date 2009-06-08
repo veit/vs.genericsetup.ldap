@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.0.2 - (unreleased)
+--------------------
+
+- added support for <cache value="<CACHENAME>"/>
+
 1.0.1 - (2009/06/05)
 --------------------
 
