@@ -59,11 +59,11 @@ class LDAPPluginExportImport:
 
     def getTypeStr(self, value):
         val_type = 'str'
-        if type(value) == type([]):
+        if isinstance(value, list):
             val_type = 'list'
-        elif type(value) == type(23):
+        elif isinstance(value, int):
             val_type = 'int'
-        elif type(value) == type(True):
+        elif isinstance(value, bool):
             val_type = 'bool'
         return val_type 
         
