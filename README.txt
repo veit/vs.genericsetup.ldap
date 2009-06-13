@@ -11,4 +11,5 @@ Authors
 
 - Andreas Jung
 - Veit Schiele
-- Anne Wello
+- Anne Walther
+- Alexander Loeschel
