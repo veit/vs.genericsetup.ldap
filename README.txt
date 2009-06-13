@@ -1,7 +1,9 @@
 Introduction
 ============
 
+Authors
+-------
 
-note to mac-users:
-    
-    * use the subversion-checkout, setup your own python-ldap and remove the 'python-ldap'-dependency
+- Andreas Jung
+- Veit Schiele
+- Anne Wello
