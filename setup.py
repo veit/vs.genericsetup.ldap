@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0.2'
+version = '1.1.0'
 
-setup(name='collective.genericsetup.ldap',
+setup(name='vs.genericsetup.ldap',
       version=version,
       description="Extension for GenericSetup, support for LDAP and AD",
       long_description=open("README.txt").read() + "\n" +

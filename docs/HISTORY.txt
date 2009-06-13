@@ -1,10 +1,12 @@
 Changelog
 =========
 
-1.0.2 - (unreleased)
+1.1.0 - (2009/06/13)
 --------------------
 
-- added support for <cache value="<CACHENAME>"/>
+- renamed package to vs.genericsetup.ldap since the original author
+  is uncapable to share the ownership on PyPI
+
 
 1.0.1 - (2009/06/05)
 --------------------
