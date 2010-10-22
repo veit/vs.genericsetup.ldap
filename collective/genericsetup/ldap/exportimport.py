@@ -128,6 +128,7 @@ class LDAPPluginExportImport:
             self.extractData(plugin, pas, out)
 
     def extractData(self, root, pas, out):
+        site_encoding = pas.restrictedTraverse('@@plone').site_encoding()
         plug_id = str(root.getAttribute('id'))
         plug_title = root.getAttribute('title')
         plug_type = root.getAttribute('meta_type')
@@ -169,6 +170,10 @@ class LDAPPluginExportImport:
                 value = int(value)
             if type == 'bool':
                 value = ( value.lower() !='false' and 1 or 0 )
+            if type == 'str' and isinstance(value, unicode):
+                print ('XXXX', value)
+                value = value.encode(site_encoding)
+                print (value,)
             settings[id] = value
         schema = {}
         for schemanode in root.getElementsByTagName('schema'):
