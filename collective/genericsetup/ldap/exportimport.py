@@ -171,9 +171,7 @@ class LDAPPluginExportImport:
             if type == 'bool':
                 value = ( value.lower() !='false' and 1 or 0 )
             if type == 'str' and isinstance(value, unicode):
-                print ('XXXX', value)
                 value = value.encode(site_encoding)
-                print (value,)
             settings[id] = value
         schema = {}
         for schemanode in root.getElementsByTagName('schema'):
