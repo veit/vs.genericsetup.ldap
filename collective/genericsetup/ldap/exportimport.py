@@ -25,7 +25,7 @@ except ImportError: # BBB
     from Products.PageTemplates.PageTemplateFile import PageTemplateFile as PageTemplateResource
 
 ldap_props = ['_login_attr',
-              '_uid_attr', 
+              '_uid_attr',
               '_rdnattr',
               'users_base',
               'users_scope',
@@ -65,8 +65,8 @@ class LDAPPluginExportImport:
             val_type = 'int'
         elif isinstance(value, bool):
             val_type = 'bool'
-        return val_type 
-        
+        return val_type
+
     def _getExportInfo(self, context):
         info = []
         portal = context.getSite()
@@ -80,8 +80,8 @@ class LDAPPluginExportImport:
                     act_ids = [x[0] for x in actives]
                     if obj.getId() in act_ids:
                         interfaces.append(p_info['id'])
-                        
-                plugin_props = obj.propertyMap() 
+
+                plugin_props = obj.propertyMap()
                 for prop in plugin_props:
                     value = obj.getProperty(prop['id'])
                     if prop['type'] in ['string', 'int']:
@@ -118,15 +118,15 @@ class LDAPPluginExportImport:
         if xml is None:
             logger.info('Nothing to import.')
             return
-                   
+
         portal = context.getSite()
         pas = getattr(portal, 'acl_users')
         dom = parseString(xml)
         root = dom.documentElement
-            
+
         for plugin in root.getElementsByTagName('ldapplugin'):
             self.extractData(plugin, pas, out)
-            
+
     def extractData(self, root, pas, out):
         plug_id = str(root.getAttribute('id'))
         plug_title = root.getAttribute('title')
@@ -148,28 +148,28 @@ class LDAPPluginExportImport:
         for iface in root.getElementsByTagName('interface'):
             interfaces.append(iface.getAttribute('value'))
 
-        caches = list() 
+        caches = list()
         for node in root.getElementsByTagName('cache'):
             caches.append(node.getAttribute('value'))
 
         if len(caches) > 1:
             raise ValueError('You can not define multiple <cache> properties')
-            
+
         for prop in root.getElementsByTagName('property'):
             type = prop.getAttribute('type')
             values = []
             for v in prop.getElementsByTagName('item'):
                 values.append(v.getAttribute('value'))
             id = prop.getAttribute('id')
-            if type == 'list': 
+            if type == 'list':
                 value = values
-            else: 
+            else:
                 value = values[0]
             if type == 'int':
                 value = int(value)
             if type == 'bool':
                 value = ( value.lower() !='false' and 1 or 0 )
-            settings[id] = value 
+            settings[id] = value
         schema = {}
         for schemanode in root.getElementsByTagName('schema'):
              for attr in schemanode.getElementsByTagName('attr'):
@@ -179,12 +179,12 @@ class LDAPPluginExportImport:
                     if item.getAttribute('value') != 'False':
                         c_attr[str(item.getAttribute('id'))] = str(item.getAttribute('value'))
                     else:
-                        c_attr[str(item.getAttribute('id'))] = False 
+                        c_attr[str(item.getAttribute('id'))] = False
                  schema[str(c_id)] = c_attr
         servers = []
         for server in root.getElementsByTagName('server'):
             c_server = {'update': (server.getAttribute('update') == 'True'),
-                        'delete': (server.getAttribute('delete') == 'True')} 
+                        'delete': (server.getAttribute('delete') == 'True')}
             for item in server.getElementsByTagName('item'):
                 value = item.getAttribute('value')
                 type = item.getAttribute('type')
@@ -192,26 +192,26 @@ class LDAPPluginExportImport:
                 if type == 'int':
                     value = int(value)
                 c_server[id] = value
-            servers.append(c_server) 
-        
-        adder = None    
-        # use PloneLDAP    
+            servers.append(c_server)
+
+        adder = None
+        # use PloneLDAP
         if (plug_type == 'Plone LDAP plugin') or ((plug_type == 'LDAP Multi Plugin') and (update)) :
             adder = manage_addPloneLDAPMultiPlugin
         elif (plug_type == 'Plone Active Directory plugin') or ((plug_type == 'ActiveDirectory Multi Plugin') and (update)) :
             adder = manage_addPloneActiveDirectoryMultiPlugin
-            
+
         # use LDAPMultiPlugin
         elif (plug_type == 'LDAP Multi Plugin') and (not update):
             adder = manage_addLDAPMultiPlugin
-        elif (plug_type == 'ActiveDirectory Multi Plugin') and (not update): 
-            adder = manage_addActiveDirectoryMultiPlugin 
+        elif (plug_type == 'ActiveDirectory Multi Plugin') and (not update):
+            adder = manage_addActiveDirectoryMultiPlugin
         # non LDAP Plugin Found
         if not adder:
             print >> out, "missing product for %s " % plug_type
-        
+
         if plug_update and (plug_id in pas.objectIds()):
-            pas.manage_delObjects(ids=[plug_id])   
+            pas.manage_delObjects(ids=[plug_id])
         if plug_id not in pas.objectIds():
             adder(
                 self = pas,
@@ -242,7 +242,7 @@ class LDAPPluginExportImport:
             plugin = getattr(pas, plug_id)
             for prop in plugin_props:
                 if plugin.hasProperty(prop['id']):
-                    plugin.manage_changeProperties({prop['id']:prop['value']})   
+                    plugin.manage_changeProperties({prop['id']:prop['value']})
                 else:
                     plugin.manage_addProperty(id=prop['id'], value=prop['value'], type=prop['type'])
             folder = plugin.acl_users
@@ -250,32 +250,32 @@ class LDAPPluginExportImport:
             if '_extra_user_filter' in settings.keys():
                 folder._extra_user_filter = settings['_extra_user_filter']
             folder.setSchemaConfig(schema)
-            
+
         if servers:
             plugin = getattr(pas, plug_id)
             folder = plugin.acl_users
             existing_hosts = [server['host'] for server in folder.getServers()]
-            for server in servers: 
+            for server in servers:
                 if (server['update'] or server['delete']) and server['host'] in existing_hosts:
                     folder.manage_deleteServers(position_list=[existing_hosts.index(server['host'])])
                 if server['host'] not in existing_hosts:
-                    folder.manage_addServer(host=server['host'], 
+                    folder.manage_addServer(host=server['host'],
                         use_ssl = (server['protocol'] == 'ldaps'),
-                        port=server['port'], 
-                        conn_timeout=server['conn_timeout'], 
+                        port=server['port'],
+                        conn_timeout=server['conn_timeout'],
                         op_timeout=server['op_timeout'])
 
 
 def exportLDAPSettings(context):
     exporter = LDAPPluginExportImport()
-    out = StringIO() 
+    out = StringIO()
     exporter.exportData(context, out)
     logger = context.getLogger('ldapsettings')
     logger.info(out.getvalue())
-         
+
 def importLDAPSettings(context):
     importer = LDAPPluginExportImport()
-    out = StringIO() 
+    out = StringIO()
     importer.importData(context, out)
     logger = context.getLogger('ldapsettings')
     logger.info(out.getvalue())
