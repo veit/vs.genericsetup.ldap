@@ -1,11 +1,15 @@
 Changelog
 =========
 
-1.1.0 - (2009/06/13)
+1.1.1 - (2010/10/25)
 --------------------
 
 - Respect site encoding and do not use unicode in configuration. This fixes a
-  TypeError when when the _uid_attr configuration is accessed (when resolving groups).
+  TypeError when the _uid_attr configuration is accessed (when resolving groups).
+
+
+1.1.0 - (2009/06/13)
+--------------------
 
 - renamed package to vs.genericsetup.ldap since the original author
   is uncapable to share the ownership on PyPI
