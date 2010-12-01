@@ -128,7 +128,7 @@ class LDAPPluginExportImport:
             self.extractData(plugin, pas, out)
 
     def extractData(self, root, pas, out):
-        site_encoding = pas.restrictedTraverse('@@plone').site_encoding()
+        site_encoding = 'utf-8' # pas.restrictedTraverse('@@plone').site_encoding()
         plug_id = str(root.getAttribute('id'))
         plug_title = root.getAttribute('title')
         plug_type = root.getAttribute('meta_type')
