@@ -22,7 +22,7 @@ setup(name='vs.genericsetup.ldap',
       url='http://svn.plone.org/svn/collective/collective.genericsetup.ldap',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['collective', 'collective.genericsetup'],
+      namespace_packages=['vs', 'vs.genericsetup'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
