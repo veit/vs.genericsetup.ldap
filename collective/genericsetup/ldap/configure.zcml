@@ -27,16 +27,4 @@
         interface=".interfaces.ILDAPPlugin"
     />
 
-    <adapter
-        factory=".exportimport.LDAPPluginExportImport"
-        provides="Products.GenericSetup.interfaces.IFilesystemExporter"
-        for=".interfaces.ILDAPPlugin"
-    />
-
-    <adapter
-        factory=".exportimport.LDAPPluginExportImport"
-        provides="Products.GenericSetup.interfaces.IFilesystemImporter"
-        for=".interfaces.ILDAPPlugin"
-    />
-
 </configure>
