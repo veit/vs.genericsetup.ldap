@@ -1,6 +1,16 @@
 Introduction
 ============
 
+This package registers GenericSetup import and export steps for
+``Products.PloneLDAP``.
+
+.. ATTENTION::
+   Since release 1.2, the package namespace has been changed
+   to ``vs.genericsetup.ldap``.
+   
+   In previous releases, the package namespace was 
+   ``collective.genericsetup.ldap``.
+
 License
 =======
 

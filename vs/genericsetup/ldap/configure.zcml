@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="collective.genericsetup.ldap">
+    i18n_domain="vs.genericsetup.ldap">
 
     <five:registerPackage package="." initialize=".initialize" />
 
@@ -12,14 +12,14 @@
         name="ldap-settings-import"
         title="LDAP Settings Import"
         description="Import custom LDAP and AD settings."
-        handler="collective.genericsetup.ldap.exportimport.importLDAPSettings"
+        handler="vs.genericsetup.ldap.exportimport.importLDAPSettings"
     />
 
     <genericsetup:exportStep
         name="ldap-settings-export"
         title="LDAP Settings Export"
         description="Export custom LDAP and AD settings."
-        handler="collective.genericsetup.ldap.exportimport.exportLDAPSettings"
+        handler="vs.genericsetup.ldap.exportimport.exportLDAPSettings"
     />
 
     <five:implements

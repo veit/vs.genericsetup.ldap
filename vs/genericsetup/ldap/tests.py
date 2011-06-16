@@ -1,16 +1,13 @@
 import unittest
 
-from zope.testing import doctestunit
-from zope.component import testing
-from Testing import ZopeTestCase as ztc
-
 from Products.Five import zcml
 from Products.Five import fiveconfigure
 from Products.PloneTestCase import PloneTestCase as ptc
 from Products.PloneTestCase.layer import PloneSite
 ptc.setupPloneSite()
 
-import collective.genericsetup.ldap
+import vs.genericsetup.ldap
+
 
 class TestCase(ptc.PloneTestCase):
     class layer(PloneSite):
@@ -18,7 +15,7 @@ class TestCase(ptc.PloneTestCase):
         def setUp(cls):
             fiveconfigure.debug_mode = True
             zcml.load_config('configure.zcml',
-                             collective.genericsetup.ldap)
+                             vs.genericsetup.ldap)
             fiveconfigure.debug_mode = False
 
         @classmethod
@@ -31,21 +28,21 @@ def test_suite():
 
         # Unit tests
         #doctestunit.DocFileSuite(
-        #    'README.txt', package='collective.genericsetup.ldap',
+        #    'README.txt', package='vs.genericsetup.ldap',
         #    setUp=testing.setUp, tearDown=testing.tearDown),
 
         #doctestunit.DocTestSuite(
-        #    module='collective.genericsetup.ldap.mymodule',
+        #    module='vs.genericsetup.ldap.mymodule',
         #    setUp=testing.setUp, tearDown=testing.tearDown),
 
 
         # Integration tests that use PloneTestCase
         #ztc.ZopeDocFileSuite(
-        #    'README.txt', package='collective.genericsetup.ldap',
+        #    'README.txt', package='vs.genericsetup.ldap',
         #    test_class=TestCase),
 
         #ztc.FunctionalDocFileSuite(
-        #    'browser.txt', package='collective.genericsetup.ldap',
+        #    'browser.txt', package='vs.genericsetup.ldap',
         #    test_class=TestCase),
 
         ])

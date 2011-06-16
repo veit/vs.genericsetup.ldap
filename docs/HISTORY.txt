@@ -1,10 +1,13 @@
 Changelog
 =========
 
-1.1.2 (Unreleased)
+1.2 (Unreleased)
 ------------------
 
-- Fix GS export, plugin should not be exported as content
+- Change namespace to ``vs.genericsetup.ldap``
+  to make it correspond to egg name.
+
+- Fix GS export, plugin should not be exported as content.
 
 1.1.1 (2010/10/25)
 ------------------
