@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.2 (Unreleased)
-------------------
+1.2 (2011-06-16)
+----------------
 
 - Change namespace to ``vs.genericsetup.ldap``
   to make it correspond to egg name.
