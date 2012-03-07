@@ -134,7 +134,7 @@ class LDAPPluginExportImport:
         plug_type = root.getAttribute('meta_type')
         plug_update = (root.getAttribute('update') == 'True')
         settings = {}
-        interfaces = []
+        interfaces = {}
         plugin_props = []
         for prop in root.getElementsByTagName('plugin_property'):
             p_type = prop.getAttribute('type')
@@ -147,8 +147,13 @@ class LDAPPluginExportImport:
             plugin_props.append({'id':p_id, 'type': p_type, 'value': value})
 
         for iface in root.getElementsByTagName('interface'):
-            interfaces.append(iface.getAttribute('value'))
-
+            interfaces[iface.getAttribute('value')] = {}
+            
+            if iface.getAttribute('after'):
+                interfaces[iface.getAttribute('value')].update({'after':iface.getAttribute('after')})
+            if iface.getAttribute('before'):
+                interfaces[iface.getAttribute('value')].update({'before':iface.getAttribute('before')})
+                
         caches = list()
         for node in root.getElementsByTagName('cache'):
             caches.append(node.getAttribute('value'))
@@ -175,15 +180,15 @@ class LDAPPluginExportImport:
             settings[id] = value
         schema = {}
         for schemanode in root.getElementsByTagName('schema'):
-             for attr in schemanode.getElementsByTagName('attr'):
-                 c_id = attr.getAttribute('id')
-                 c_attr = {}
-                 for item in attr.getElementsByTagName('item'):
+            for attr in schemanode.getElementsByTagName('attr'):
+                c_id = attr.getAttribute('id')
+                c_attr = {}
+                for item in attr.getElementsByTagName('item'):
                     if item.getAttribute('value') != 'False':
                         c_attr[str(item.getAttribute('id'))] = str(item.getAttribute('value'))
                     else:
                         c_attr[str(item.getAttribute('id'))] = False
-                 schema[str(c_id)] = c_attr
+                schema[str(c_id)] = c_attr
         servers = []
         for server in root.getElementsByTagName('server'):
             c_server = {'update': (server.getAttribute('update') == 'True'),
@@ -238,7 +243,37 @@ class LDAPPluginExportImport:
                 read_only = settings['read_only'],
             )
             obj = getattr(pas, plug_id)
-            obj.manage_activateInterfaces(interfaces)
+            obj.manage_activateInterfaces(interfaces.keys())
+            
+            for plugin, pos in interfaces.items():
+                active_plugins = pas.plugins.getAllPlugins(plugin).get('active')
+                currentpos = active_plugins.index(plug_id)
+                    
+                plugintype = pas.plugins._getInterfaceFromName(plugin)
+                
+                if pos.has_key('before') and pos.get('before')=='*':
+                    for i in range(currentpos):
+                        pas.plugins.movePluginsUp(plugintype, [plug_id,])
+                        
+                if pos.has_key('after') and pos.get('after')=='*':
+                    for i in range(len(active_plugins) - currentpos):
+                        pas.plugins.movePluginsDown(plugintype, [plug_id,])
+
+                if pos.has_key('after') and pos.get('after')!='*':
+                    afterpluging = pos.get('after')
+                    afterpos =  active_plugins.index(afterpluging)
+                    if currentpos < afterpos:
+                        for i in range(afterpos - currentpos):
+                            pas.plugins.movePluginsDown(plugintype, [plug_id,])
+
+                if pos.has_key('before') and pos.get('before')!='*':
+                    beforepluging = pos.get('before')
+                    beforepos =  active_plugins.index(beforepluging)
+                    if currentpos > beforepos:
+                        for i in range(currentpos - beforepos):
+                            pas.plugins.movePluginsUp(plugintype, [plug_id,])
+
+                        
             for cache in caches:
                 obj.ZCacheable_setManagerId(cache)
             print >> out, "LDAP-plugin added: %s." % plug_id
